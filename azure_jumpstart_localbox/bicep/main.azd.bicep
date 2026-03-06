@@ -4,11 +4,14 @@
 param envName string
 
 @description('Azure service principal client id')
-param spnClientId string = 'null'
+param spnClientId string
 
 @description('Azure service principal client secret')
 @secure()
-param spnClientSecret string = 'null'
+param spnClientSecret string
+
+@description('Tags to apply to deployed resources')
+param resourceTags object = {}
 
 @description('Azure AD tenant id for your service principal')
 param tenantId string = 'null'
@@ -68,6 +71,7 @@ module mgmtArtifactsAndPolicyDeployment 'mgmt/mgmtArtifacts.bicep' = {
   params: {
     workspaceName: logAnalyticsWorkspaceName
     location: location
+    resourceTags: resourceTags
   }
 }
 
@@ -77,6 +81,7 @@ module networkDeployment 'network/network.bicep' = {
   params: {
     deployBastion: deployBastion
     location: location
+    resourceTags: resourceTags
   }
 }
 
@@ -85,6 +90,7 @@ module storageAccountDeployment 'mgmt/storageAccount.bicep' = {
   scope: rg
   params: {
     location: location
+    resourceTags: resourceTags
   }
 }
 
@@ -94,8 +100,6 @@ module hostDeployment 'host/host.bicep' = {
   params: {
     windowsAdminUsername: windowsAdminUsername
     windowsAdminPassword: windowsAdminPassword
-    spnClientId: spnClientId
-    spnClientSecret: spnClientSecret
     tenantId: tenantId
     spnProviderId: spnProviderId
     workspaceName: logAnalyticsWorkspaceName
@@ -108,6 +112,7 @@ module hostDeployment 'host/host.bicep' = {
     rdpPort: rdpPort
     autoDeployClusterResource: autoDeployClusterResource
     autoUpgradeClusterResource: autoUpgradeClusterResource
+    resourceTags: resourceTags
   }
 }
 
